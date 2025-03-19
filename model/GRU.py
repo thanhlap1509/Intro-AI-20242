@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-class LSTM(nn.Module):
+class GRU(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super().__init__()
         
@@ -10,17 +10,14 @@ class LSTM(nn.Module):
         self.output_size = output_size
         
         # weights
-        self.W_f = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(hidden_size, hidden_size + input_size)))
-        self.b_f = nn.Parameter(torch.zeros(hidden_size, 1))
+        self.W_u = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(hidden_size, hidden_size + input_size)))
+        self.b_u = nn.Parameter(torch.zeros(hidden_size, 1))
         
-        self.W_i = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(hidden_size, hidden_size + input_size)))
-        self.b_i = nn.Parameter(torch.zeros(hidden_size, 1))
+        self.W_r = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(hidden_size, hidden_size + input_size)))
+        self.b_r = nn.Parameter(torch.zeros(hidden_size, 1))
         
         self.W_c = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(hidden_size, hidden_size + input_size)))
         self.b_c = nn.Parameter(torch.zeros(hidden_size, 1))
-        
-        self.W_o = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(hidden_size, hidden_size + input_size)))
-        self.b_o = nn.Parameter(torch.zeros(hidden_size, 1))
         
         # Output layer
         self.W_y = nn.Parameter(torch.randn(output_size, hidden_size) * 0.01)
@@ -38,26 +35,20 @@ class LSTM(nn.Module):
             
         """
 
-        h_t = torch.zeros(self.hidden_size, 1, device=X.device)
-        c_t = torch.zeros(self.hidden_size, 1, device=X.device)
-        
+        h_t = torch.zeros(self.hidden_size, 1, device=X.device)        
         outputs = []
         hidden_states = []
                 
         for x_t in X:
             concat = torch.cat((h_t, x_t), dim=0)
+            u_t = torch.sigmoid(torch.mm(self.W_u, concat) + self.b_u)
+            r_t = torch.sigmoid(torch.mm(self.W_r, concat) + self.b_r)
             
-            f_t = torch.sigmoid(torch.mm(self.W_f, concat) + self.b_f)
-            i_t = torch.sigmoid(torch.mm(self.W_i, concat) + self.b_i)
-            c_cand = torch.tanh(torch.mm(self.W_c, concat) + self.b_c)
-            
-            c_t = f_t*c_t + i_t*c_cand
-            
-            o_t = torch.sigmoid(torch.mm(self.W_o, concat) + self.b_o)
-            h_t = o_t*torch.tanh(c_t)
-            
-            y_t = torch.mm(self.W_y, h_t) + self.b_y
+            h_cand = torch.tanh(torch.mm(self.W_c, torch.cat((r_t * h_t, x_t), dim=0)) + self.b_c)
+            h_t = u_t*h_cand + (1 - u_t)*h_t            
             hidden_states.append(h_t)
+
+            y_t = torch.mm(self.W_y, h_t) + self.b_y
             outputs.append(y_t)
             
         outputs = torch.stack(outputs, dim=0)

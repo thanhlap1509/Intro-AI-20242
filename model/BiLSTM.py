@@ -13,7 +13,7 @@ class BiLSTM(nn.Module):
         self.LSTM_cell_l = LSTM(input_size, hidden_size, output_size)
         self.LSTM_cell_r = LSTM(input_size, hidden_size, output_size)
         
-        self.W_y = nn.Parameter(torch.nn.init.xavier_uniform_(torch.zeros(output_size, hidden_size * 2)))
+        self.W_y = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(output_size, hidden_size * 2)))
         self.b_y = nn.Parameter(torch.zeros(output_size, 1))
         
     def forward(self, X):
