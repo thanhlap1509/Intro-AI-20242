@@ -3,15 +3,15 @@ import torch.nn as nn
 from LSTM import LSTM
 
 class BiLSTM(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size, hidden_size, output_size, dropout_rate=0.4):
         super().__init__()
         
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
         
-        self.LSTM_cell_l = LSTM(input_size, hidden_size, output_size)
-        self.LSTM_cell_r = LSTM(input_size, hidden_size, output_size)
+        self.LSTM_cell_l = LSTM(input_size, hidden_size, output_size, dropout_rate)
+        self.LSTM_cell_r = LSTM(input_size, hidden_size, output_size, dropout_rate)
         
         self.W_y = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(output_size, hidden_size * 2)))
         self.b_y = nn.Parameter(torch.zeros(output_size, 1))

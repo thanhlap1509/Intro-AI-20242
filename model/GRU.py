@@ -2,12 +2,13 @@ import torch
 import torch.nn as nn
 
 class GRU(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size, hidden_size, output_size, dropout_rate=0.4):
         super().__init__()
         
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
+        self.dropout = nn.Dropout(dropout_rate)
         
         # weights
         self.W_u = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(hidden_size, hidden_size + input_size)))
@@ -45,7 +46,8 @@ class GRU(nn.Module):
             r_t = torch.sigmoid(torch.mm(self.W_r, concat) + self.b_r)
             
             h_cand = torch.tanh(torch.mm(self.W_c, torch.cat((r_t * h_t, x_t), dim=0)) + self.b_c)
-            h_t = u_t*h_cand + (1 - u_t)*h_t            
+            h_t = u_t*h_cand + (1 - u_t)*h_t 
+            h_t = self.dropout(h_t)           
             hidden_states.append(h_t)
 
             y_t = torch.mm(self.W_y, h_t) + self.b_y

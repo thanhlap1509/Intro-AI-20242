@@ -2,12 +2,13 @@ import torch
 import torch.nn as nn
 
 class LSTM(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size, hidden_size, output_size, dropout_rate = 0.4):
         super().__init__()
         
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
+        self.dropout = nn.Dropout(dropout_rate)
         
         # weights
         self.W_f = nn.Parameter(torch.nn.init.xavier_uniform_(torch.empty(hidden_size, hidden_size + input_size)))
@@ -55,6 +56,7 @@ class LSTM(nn.Module):
             
             o_t = torch.sigmoid(torch.mm(self.W_o, concat) + self.b_o)
             h_t = o_t*torch.tanh(c_t)
+            h_t = self.dropout(h_t)
             
             y_t = torch.mm(self.W_y, h_t) + self.b_y
             hidden_states.append(h_t)
