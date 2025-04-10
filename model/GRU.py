@@ -28,7 +28,7 @@ class GRU(nn.Module):
         """Forward function for LSTM across all time step input vector, return output and hidden state for BiLSTM
         
         Args:
-            X               (seq_len, input_size): Input sequence data
+            X               (seq_len, input_size, 1): Input sequence data
 
         Returns:
             outputs         (seq_len, output_size, 1): Output data

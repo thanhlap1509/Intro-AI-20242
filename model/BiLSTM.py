@@ -20,7 +20,7 @@ class BiLSTM(nn.Module):
         """Fowarding X input sequence across two LSTM sequence, left-right and right-left
 
         Args:
-            X       (seq_len, input_size)       : Input sequence data
+            X       (seq_len, input_size, 1)       : Input sequence data
         Data:
             h_left  (seq_len, hidden_state, 1)  : Hidden states along the beginning-end time step
             h_right (seq_len, hidden_state, 1)  : Hidden states along the end-beginning time step
