@@ -22,7 +22,9 @@ def forward(self, X):
             X       (seq_len, input_size, 1): Input sequence data, seq_len is number of time step, input_size is size of feature vector
             
         Returns:
-            X       (seq_len, hidden_size, 1): higher order representation of input data
+            outputs         (seq_len, output_size, 1): Output data
+            hidden_states   (seq_len, hidden_size, 1): Hidden state across time step
+
         
         """
         X = self.cnn(X)

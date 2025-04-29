@@ -27,6 +27,8 @@ class BiLSTM(nn.Module):
             h       (seq_len, hidden_state*2, 1): Concatenation of hidden state from LSTM left and LSTM right in a beginning-end fashion
         Returns:
             outputs (seq_len, output_size, 1)   : Output data
+            h       (seq_len, hidden_state*2, 1): Concatenation of hidden state from LSTM left and LSTM right in a beginning-end fashion
+
         """
         _, hs_left = self.LSTM_cell_l(X)
         _, hs_right = self.LSTM_cell_r(torch.flip(X,dims=[0])) # flip input along time dimension for right LSTM
