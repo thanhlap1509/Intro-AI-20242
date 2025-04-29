@@ -17,21 +17,26 @@ class CNN(nn.Module):
                                      padding = 0) 
         
         # Since we apply the same padding for convolution op, the output size is: 
-        self.output_size = num_filters * (((input_size - pool_size) / pool_stride) + 1) 
+        self.output_size = int(num_filters * (((input_size - pool_size) / pool_stride) + 1)) 
         
     def forward(self, X):
     
         """Forwarding function for CNN model
         
         Args:
-            X       (seq_len, input_size): Input sequence data, seq_len is number of time step, input_size is size of feature vector
+            X       (seq_len, input_size, 1): Input sequence data, seq_len is number of time step, input_size is size of feature vector
             
         Returns:
             X       (seq_len, num_filters * L_pooled): higher order representation of input data
         
         """
-        X = X.unsqueeze(dim=1)  # X = (seq_len, 1, input_size) 
-        X = self.filters(X)     # X = (seq_len, num_filters, input_size) = (N, C_in, L_out) 
-        X = self.max_pool(X)    # X = (seq_len, num_filters, ((input_size - pool_size) / pool_stride) + 1) 
+        X = X.permute(0, 2, 1)              # X = (seq_len, 1, input_size) 
+        X = self.filters(X)                 # X = (seq_len, num_filters, input_size) = (N, C_in, L_out) 
+        X = self.max_pool(X)                # X = (seq_len, num_filters, ((input_size - pool_size) / pool_stride) + 1) 
         X = torch.flatten(X, start_dim = 1) # X = (seq_len, num_filters * ((input_size - pool_size) / pool_stride) + 1)) 
-        return X
+        return X.unsqueeze(-1)
+
+if __name__ == "__main__":
+    cnn = CNN(15, 3, 5, 3)
+    print(cnn(torch.randn(50, 15, 1)).shape)
+    print(cnn.output_size)
