@@ -57,4 +57,8 @@ class GRU(nn.Module):
         hidden_states = torch.stack(hidden_states, dim=0)
 
         return outputs, hidden_states
-            
+
+if __name__ == "__main__":
+    model = GRU(13, 200, 10)
+    x = torch.randn(100, 13, 1)
+    print(model(x)[0].shape)              

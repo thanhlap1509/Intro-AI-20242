@@ -44,10 +44,10 @@ class BiLSTM(nn.Module):
         
         outputs = torch.stack(outputs, dim=0)
           
-        return outputs
+        return outputs, h
 
 if __name__ == "__main__":
     model = BiLSTM(13, 200, 10)
     x = torch.randn(100, 13, 1)
-    print(model(x).shape)  
+    print(model(x)[0].shape)  
         
