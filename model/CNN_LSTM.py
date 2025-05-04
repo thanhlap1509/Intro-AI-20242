@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-from model import CNN, LSTM
+from model.CNN import CNN
+from model.LSTM import LSTM
 
 class CNN_LSTM(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, kernel_size, num_filters, pool_size, kernel_stride = 1, pool_stride = 1, dropout_rate=0.4):
