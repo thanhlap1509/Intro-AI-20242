@@ -14,21 +14,21 @@ class CNN_LSTM(nn.Module):
         
         self.lstm = LSTM(self.cnn.output_size, hidden_size, output_size)
 
-def forward(self, X):
-    
-        """Forwarding function for CNN-LSTM model
+    def forward(self, X):
         
-        Args:
-            X       (seq_len, input_size, 1): Input sequence data, seq_len is number of time step, input_size is size of feature vector
+            """Forwarding function for CNN-LSTM model
             
-        Returns:
-            outputs         (seq_len, output_size, 1): Output data
-            hidden_states   (seq_len, hidden_size, 1): Hidden state across time step
+            Args:
+                X       (seq_len, input_size, 1): Input sequence data, seq_len is number of time step, input_size is size of feature vector
+                
+            Returns:
+                outputs         (seq_len, output_size, 1): Output data
+                hidden_states   (seq_len, hidden_size, 1): Hidden state across time step
 
-        
-        """
-        X = self.cnn(X)
-        outputs, hidden_states = self.lstm(X)
-        return outputs, hidden_states
+            
+            """
+            X = self.cnn(X)
+            outputs, hidden_states = self.lstm(X)
+            return outputs, hidden_states
         
       
