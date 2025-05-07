@@ -33,21 +33,16 @@ class BiLSTM(nn.Module):
         _, hs_left = self.LSTM_cell_l(X)
         _, hs_right = self.LSTM_cell_r(torch.flip(X,dims=[0])) # flip input along time dimension for right LSTM
         hs_right = torch.flip(hs_right, dims=[0]) # flip right hidden state to be from beginning-end
-                
-        outputs = []
-        
+                        
         h = torch.cat((hs_left, hs_right),dim=1)
         
-        for h_t in h:
-            y_t = torch.mm(self.W_y, h_t) + self.b_y
-            outputs.append(y_t)
-        
-        outputs = torch.stack(outputs, dim=0)
+        outputs = torch.matmul(self.W_y, h.squeeze(-1).T) + self.b_y  # shape: (output_size, seq_len)
+        outputs = outputs.T.unsqueeze(-1)  # shape: (seq_len, output_size, 1)
           
         return outputs, h
 
 if __name__ == "__main__":
-    model = BiLSTM(13, 200, 10)
+    model = BiLSTM(13, 200, 1)
     x = torch.randn(100, 13, 1)
     print(model(x)[0].shape)  
         
