@@ -91,8 +91,8 @@ y_file = st.file_uploader("Upload y data (numpy file)", type=["npy"])
 
 if x_file is not None and y_file is not None:
     # Save uploaded files temporarily to local disk
-    x_path = "temp_X.npy"
-    y_path = "temp_y.npy"
+    x_path = "./data_processed/X_Aotizhongxin.npy"
+    y_path = "./data_processed/y_Aotizhongxin.npy"
 
     with open(x_path, "wb") as f:
         f.write(x_file.getbuffer())
@@ -105,11 +105,11 @@ if x_file is not None and y_file is not None:
 
     # Select the best checkpoint for the chosen model
     if model_type == 'LSTM':
-        checkpoint_path = r"C:\Users\Dell\OneDrive\Máy tính\Intro-AI-20242\best_LSTM_h128_b8_l0.001_oAdam_s_cosine_wr0.1_e100.pth"
+        checkpoint_path = r"./checkpoint/model/best_LSTM_h128_b8_l0.001_oAdam_s_cosine_wr0.1_e100.pth"
     elif model_type == 'GRU':
-        checkpoint_path = r"C:\Users\Dell\OneDrive\Máy tính\Intro-AI-20242\best_GRU_h128_b8_l0.0005_oAdam_s_cosine_wr0.2_e150.pth"
+        checkpoint_path = r"./checkpoint/model/best_GRU_h128_b8_l0.0005_oAdam_s_cosine_wr0.2_e150.pth"
     else:
-        checkpoint_path = r"C:\Users\Dell\OneDrive\Máy tính\Intro-AI-20242\best_CNN_LSTM_h96_b8_l0.001_oAdam_s_cosine_wr0.1_e100.pth"
+        checkpoint_path = r"./checkpoint/model/best_CNN_LSTM_h96_b8_l0.001_oAdam_s_cosine_wr0.1_e100.pth"
     
     # Load the model and evaluate
     model = load_model(model_type, checkpoint_path)
